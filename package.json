@@ -1,0 +1,30 @@
+{
+  "name": "hono-sequalize-starter",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo",
+    "db:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
+    "db:seed": "sequelize-cli db:seed:all",
+    "db:seed:undo": "sequelize-cli db:seed:undo:all",
+    "db:reset": "sequelize-cli db:migrate:undo:all && sequelize-cli db:migrate && sequelize-cli db:seed:all"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.4",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^17.2.2",
+    "hono": "^4.9.8",
+    "mysql2": "^3.15.0",
+    "sequelize": "^6.37.7",
+    "uuid": "^11.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "sequelize-cli": "^6.6.3",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}
