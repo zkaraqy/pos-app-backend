@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('product_varian', [
+    await queryInterface.bulkInsert('product_varians', [
       {
         id: 1,
         id_product: 7, // Kopi Hitam
@@ -68,6 +68,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('product_varian', null, {});
+    await queryInterface.bulkDelete('product_varians', null, {});
   },
 };

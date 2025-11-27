@@ -1,81 +1,111 @@
-import { Model, DataTypes, type Optional } from 'sequelize';
-import { sequelize } from '../index.js';
+import {
+  Association,
+  type CreationOptional,
+  DataTypes,
+  type HasManyGetAssociationsMixin,
+  type HasManySetAssociationsMixin,
+  type HasManyAddAssociationMixin,
+  type HasManyAddAssociationsMixin,
+  type HasManyCreateAssociationMixin,
+  type HasManyRemoveAssociationMixin,
+  type HasManyRemoveAssociationsMixin,
+  type HasManyHasAssociationMixin,
+  type HasManyHasAssociationsMixin,
+  type HasManyCountAssociationsMixin,
+  type InferCreationAttributes,
+  type InferAttributes,
+  Model,
+  type NonAttribute,
+  Sequelize
+} from 'sequelize'
+import type { Image } from './Image.js'
+import type { TransactionDetail } from './TransactionDetail.js'
 
-interface ProductVarianAttributes {
-  id: number;
-  id_product: number;
-  name: string;
-  description: string | null;
-  stock: number;
-  price: number;
-  created_at: Date;
-  updated_at: Date;
-}
+type ProductVarianAssociations = 'transactionDetails' | 'images'
 
-interface ProductVarianCreationAttributes extends Optional<ProductVarianAttributes, 'id' | 'description' | 'stock' | 'created_at' | 'updated_at'> {}
+export class ProductVarian extends Model<
+  InferAttributes<ProductVarian, {omit: ProductVarianAssociations}>,
+  InferCreationAttributes<ProductVarian, {omit: ProductVarianAssociations}>
+> {
+  declare id: CreationOptional<number>
+  declare idProduct: number
+  declare name: string
+  declare description: string | null
+  declare stock: number
+  declare price: number
+  declare createdAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>
 
-class ProductVarian extends Model<ProductVarianAttributes, ProductVarianCreationAttributes> implements ProductVarianAttributes {
-  public id!: number;
-  public id_product!: number;
-  public name!: string;
-  public description!: string | null;
-  public stock!: number;
-  public price!: number;
-  public created_at!: Date;
-  public updated_at!: Date;
-
-  public readonly product?: any;
-  public readonly images?: any[];
-  public readonly transactionDetails?: any[];
-}
-
-ProductVarian.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    id_product: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    description: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    price: {
-      type: DataTypes.DECIMAL(8, 2),
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    sequelize,
-    tableName: 'product_varian',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    underscored: true,
+  // ProductVarian hasMany TransactionDetail
+  declare transactionDetails?: NonAttribute<TransactionDetail[]>
+  declare getTransactionDetails: HasManyGetAssociationsMixin<TransactionDetail>
+  declare setTransactionDetails: HasManySetAssociationsMixin<TransactionDetail, number>
+  declare addTransactionDetail: HasManyAddAssociationMixin<TransactionDetail, number>
+  declare addTransactionDetails: HasManyAddAssociationsMixin<TransactionDetail, number>
+  declare createTransactionDetail: HasManyCreateAssociationMixin<TransactionDetail>
+  declare removeTransactionDetail: HasManyRemoveAssociationMixin<TransactionDetail, number>
+  declare removeTransactionDetails: HasManyRemoveAssociationsMixin<TransactionDetail, number>
+  declare hasTransactionDetail: HasManyHasAssociationMixin<TransactionDetail, number>
+  declare hasTransactionDetails: HasManyHasAssociationsMixin<TransactionDetail, number>
+  declare countTransactionDetails: HasManyCountAssociationsMixin
+  
+  // ProductVarian hasMany Image
+  declare images?: NonAttribute<Image[]>
+  declare getImages: HasManyGetAssociationsMixin<Image>
+  declare setImages: HasManySetAssociationsMixin<Image, number>
+  declare addImage: HasManyAddAssociationMixin<Image, number>
+  declare addImages: HasManyAddAssociationsMixin<Image, number>
+  declare createImage: HasManyCreateAssociationMixin<Image>
+  declare removeImage: HasManyRemoveAssociationMixin<Image, number>
+  declare removeImages: HasManyRemoveAssociationsMixin<Image, number>
+  declare hasImage: HasManyHasAssociationMixin<Image, number>
+  declare hasImages: HasManyHasAssociationsMixin<Image, number>
+  declare countImages: HasManyCountAssociationsMixin
+  
+  declare static associations: {
+    transactionDetails: Association<ProductVarian, TransactionDetail>,
+    images: Association<ProductVarian, Image>
   }
-);
 
-export default ProductVarian;
+  static initModel(sequelize: Sequelize): typeof ProductVarian {
+    ProductVarian.init({
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+        unique: true
+      },
+      idProduct: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      name: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      description: {
+        type: DataTypes.TEXT
+      },
+      stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      price: {
+        type: DataTypes.DECIMAL.UNSIGNED,
+        allowNull: false
+      },
+      createdAt: {
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        type: DataTypes.DATE
+      }
+    }, {
+      sequelize
+    })
+    
+    return ProductVarian
+  }
+}

@@ -1,128 +1,111 @@
-import User from './User.js';
-import Product from './Product.js';
-import Category from './Category.js';
-import ProductCategory from './ProductCategory.js';
-import ProductVarian from './ProductVarian.js';
-import Image from './Image.js';
-import LinkedImage from './LinkedImage.js';
-import Transaction from './Transaction.js';
-import TransactionDetail from './TransactionDetail.js';
-
-
-// User - Transaction (One to Many)
-User.hasMany(Transaction, {
-  foreignKey: 'id_cashier',
-  as: 'transactions',
-});
-Transaction.belongsTo(User, {
-  foreignKey: 'id_cashier',
-  as: 'cashier',
-});
-
-// Product - ProductVarian (One to Many)
-Product.hasMany(ProductVarian, {
-  foreignKey: 'id_product',
-  as: 'variants',
-});
-ProductVarian.belongsTo(Product, {
-  foreignKey: 'id_product',
-  as: 'product',
-});
-
-// Product - Category (Many to Many through ProductCategory)
-Product.belongsToMany(Category, {
-  through: ProductCategory,
-  foreignKey: 'id_product',
-  otherKey: 'id_category',
-  as: 'categories',
-});
-Category.belongsToMany(Product, {
-  through: ProductCategory,
-  foreignKey: 'id_category',
-  otherKey: 'id_product',
-  as: 'products',
-});
-
-// Product - Image (Many to Many through LinkedImage)
-Product.belongsToMany(Image, {
-  through: LinkedImage,
-  foreignKey: 'id_product',
-  otherKey: 'id_image',
-  as: 'images',
-});
-Image.belongsToMany(Product, {
-  through: LinkedImage,
-  foreignKey: 'id_image',
-  otherKey: 'id_product',
-  as: 'products',
-});
-
-// ProductVarian - Image (Many to Many through LinkedImage)
-ProductVarian.belongsToMany(Image, {
-  through: LinkedImage,
-  foreignKey: 'id_product_varian',
-  otherKey: 'id_image',
-  as: 'images',
-});
-Image.belongsToMany(ProductVarian, {
-  through: LinkedImage,
-  foreignKey: 'id_image',
-  otherKey: 'id_product_varian',
-  as: 'productVariants',
-});
-
-// LinkedImage belongs to Product, ProductVarian, Image
-LinkedImage.belongsTo(Product, {
-  foreignKey: 'id_product',
-  as: 'product',
-});
-LinkedImage.belongsTo(ProductVarian, {
-  foreignKey: 'id_product_varian',
-  as: 'productVarian',
-});
-LinkedImage.belongsTo(Image, {
-  foreignKey: 'id_image',
-  as: 'image',
-});
-
-// Transaction - TransactionDetail (One to Many)
-Transaction.hasMany(TransactionDetail, {
-  foreignKey: 'id_transaction',
-  as: 'details',
-});
-TransactionDetail.belongsTo(Transaction, {
-  foreignKey: 'id_transaction',
-  as: 'transaction',
-});
-
-// Product - TransactionDetail (One to Many)
-Product.hasMany(TransactionDetail, {
-  foreignKey: 'id_product',
-  as: 'transactionDetails',
-});
-TransactionDetail.belongsTo(Product, {
-  foreignKey: 'id_product',
-  as: 'product',
-});
-
-// ProductVarian - TransactionDetail (One to Many)
-ProductVarian.hasMany(TransactionDetail, {
-  foreignKey: 'id_product_varian',
-  as: 'transactionDetails',
-});
-TransactionDetail.belongsTo(ProductVarian, {
-  foreignKey: 'id_product_varian',
-  as: 'productVarian',
-});
+import type { Sequelize, Model } from 'sequelize'
+import { User } from './User.js'
+import { Product } from './Product.js'
+import { Category } from './Category.js'
+import { ProductVarian } from './ProductVarian.js'
+import { Image } from './Image.js'
+import { Transaction } from './Transaction.js'
+import { TransactionDetail } from './TransactionDetail.js'
+import { ProductCategory } from './ProductCategory.js'
 
 export {
   User,
   Product,
   Category,
-  ProductCategory,
   ProductVarian,
   Image,
-  LinkedImage,
   Transaction,
   TransactionDetail,
-};
+  ProductCategory
+}
+
+export function initModels(sequelize: Sequelize) {
+  User.initModel(sequelize)
+  Product.initModel(sequelize)
+  Category.initModel(sequelize)
+  ProductVarian.initModel(sequelize)
+  Image.initModel(sequelize)
+  Transaction.initModel(sequelize)
+  TransactionDetail.initModel(sequelize)
+  ProductCategory.initModel(sequelize)
+
+  User.hasMany(Transaction, {
+    as: 'transactions',
+    foreignKey: 'id_cashier'
+  })
+  Product.hasMany(TransactionDetail, {
+    as: 'transactionDetails',
+    foreignKey: 'id_product'
+  })
+  Product.hasMany(ProductVarian, {
+    as: 'productVarians',
+    foreignKey: 'id_product'
+  })
+  Product.hasMany(ProductCategory, {
+    as: 'productCategories',
+    foreignKey: 'id_product'
+  })
+  Product.hasMany(Image, {
+    as: 'images',
+    foreignKey: 'id_product'
+  })
+  Category.hasMany(ProductCategory, {
+    as: 'productCategories',
+    foreignKey: 'id_category'
+  })
+  ProductVarian.hasMany(TransactionDetail, {
+    as: 'transactionDetails',
+    foreignKey: 'id_product_varian'
+  })
+  ProductVarian.hasMany(Image, {
+    as: 'images',
+    foreignKey: 'id_product_varian'
+  })
+  Image.belongsTo(Product, {
+    as: 'product',
+    foreignKey: 'id_product'
+  })
+  Image.belongsTo(ProductVarian, {
+    as: 'productVarian',
+    foreignKey: 'id_product_varian'
+  })
+  Transaction.hasMany(TransactionDetail, {
+    as: 'transactionDetails',
+    foreignKey: 'id_transaction'
+  })
+  Transaction.belongsTo(User, {
+    as: 'user',
+    foreignKey: 'id_cashier'
+  })
+  TransactionDetail.belongsTo(Transaction, {
+    as: 'transaction',
+    foreignKey: 'id_transaction'
+  })
+  TransactionDetail.belongsTo(Product, {
+    as: 'product',
+    foreignKey: 'id_product'
+  })
+  TransactionDetail.belongsTo(ProductVarian, {
+    as: 'productVarian',
+    foreignKey: 'id_product_varian'
+  })
+  ProductCategory.belongsTo(Product, {
+    as: 'product',
+    foreignKey: 'id_product'
+  })
+  ProductCategory.belongsTo(Category, {
+    as: 'category',
+    foreignKey: 'id_category'
+  })
+
+  return {
+    User,
+    Product,
+    Category,
+    ProductVarian,
+    Image,
+    Transaction,
+    TransactionDetail,
+    ProductCategory
+  }
+}

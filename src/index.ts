@@ -1,20 +1,32 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import dotenv from "dotenv";
-import { User } from './database/models/index.js';
+import { initModels } from './database/models/index.js';
+import { sequelize } from './database/index.js';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import authRoutes from './routes/auth.routes.js';
+import productRoutes from './routes/product.routes.js';
+import transactionRoutes from './routes/transaction.routes.js';
 
 dotenv.config();
 
+initModels(sequelize);
+
 const app = new Hono()
 
-app.get('/', async (c) => {
-  return c.text(`Hello Hono!.`)
-})
+app.use(cors())
+app.use(logger())
 
-app.get('/users', async (c) => {
-  const rows = await User.findAll();
-  return c.json(rows);
+app.get('/', async (c) => {
+  return c.text(`PoS App Backend is running.`)
 })
+app.route('/api/', authRoutes)
+app.route('/api/products', productRoutes)
+app.route('/api/transactions', transactionRoutes)
+
+
+app.all('*', (c) => c.json({ message: 'Not Found' }, 404))
 
 serve({
   fetch: app.fetch,

@@ -1,61 +1,83 @@
-import { Model, DataTypes, type Optional } from 'sequelize';
-import { sequelize } from '../index.js';
+import {
+  Association,
+  type BelongsToGetAssociationMixin,
+  type BelongsToSetAssociationMixin,
+  type BelongsToCreateAssociationMixin,
+  type CreationOptional,
+  DataTypes,
+  type InferCreationAttributes,
+  type InferAttributes,
+  Model,
+  type NonAttribute,
+  Sequelize
+} from 'sequelize'
+import type { Product } from './Product.js'
+import type { ProductVarian } from './ProductVarian.js'
 
-interface ImageAttributes {
-  id: number;
-  label: string;
-  image_link: string;
-  created_at: Date;
-  updated_at: Date;
-}
+type ImageAssociations = 'product' | 'productVarian'
 
-interface ImageCreationAttributes extends Optional<ImageAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export class Image extends Model<
+  InferAttributes<Image, {omit: ImageAssociations}>,
+  InferCreationAttributes<Image, {omit: ImageAssociations}>
+> {
+  declare id: CreationOptional<number>
+  declare label: string
+  declare imageLink: string
+  declare idProduct: number | null
+  declare idProductVarian: number | null
+  declare createdAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>
 
-class Image extends Model<ImageAttributes, ImageCreationAttributes> implements ImageAttributes {
-  public id!: number;
-  public label!: string;
-  public image_link!: string;
-  public created_at!: Date;
-  public updated_at!: Date;
-
-  public readonly products?: any[];
-  public readonly productVariants?: any[];
-}
-
-Image.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    label: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    image_link: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  },
-  {
-    sequelize,
-    tableName: 'image',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    underscored: true,
+  // Image belongsTo Product
+  declare product?: NonAttribute<Product>
+  declare getProduct: BelongsToGetAssociationMixin<Product>
+  declare setProduct: BelongsToSetAssociationMixin<Product, number>
+  declare createProduct: BelongsToCreateAssociationMixin<Product>
+  
+  // Image belongsTo ProductVarian
+  declare productVarian?: NonAttribute<ProductVarian>
+  declare getProductVarian: BelongsToGetAssociationMixin<ProductVarian>
+  declare setProductVarian: BelongsToSetAssociationMixin<ProductVarian, number>
+  declare createProductVarian: BelongsToCreateAssociationMixin<ProductVarian>
+  
+  declare static associations: {
+    product: Association<Image, Product>,
+    productVarian: Association<Image, ProductVarian>
   }
-);
 
-export default Image;
+  static initModel(sequelize: Sequelize): typeof Image {
+    Image.init({
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+        unique: true
+      },
+      label: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      imageLink: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+      },
+      idProduct: {
+        type: DataTypes.INTEGER
+      },
+      idProductVarian: {
+        type: DataTypes.INTEGER
+      },
+      createdAt: {
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        type: DataTypes.DATE
+      }
+    }, {
+      sequelize
+    })
+    
+    return Image
+  }
+}

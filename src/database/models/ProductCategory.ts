@@ -1,42 +1,75 @@
-import { Model, DataTypes, type Optional } from 'sequelize';
-import { sequelize } from '../index.js';
+import {
+  Association,
+  type BelongsToGetAssociationMixin,
+  type BelongsToSetAssociationMixin,
+  type BelongsToCreateAssociationMixin,
+  type CreationOptional,
+  DataTypes,
+  type InferCreationAttributes,
+  type InferAttributes,
+  Model,
+  type NonAttribute,
+  Sequelize
+} from 'sequelize'
+import type { Category } from './Category.js'
+import type { Product } from './Product.js'
 
-interface ProductCategoryAttributes {
-  id: number;
-  id_product: number;
-  id_category: number;
-}
+type ProductCategoryAssociations = 'product' | 'category'
 
-interface ProductCategoryCreationAttributes extends Optional<ProductCategoryAttributes, 'id'> {}
+export class ProductCategory extends Model<
+  InferAttributes<ProductCategory, {omit: ProductCategoryAssociations}>,
+  InferCreationAttributes<ProductCategory, {omit: ProductCategoryAssociations}>
+> {
+  declare id: CreationOptional<number>
+  declare idProduct: number
+  declare idCategory: number
+  declare createdAt: CreationOptional<Date>
+  declare updatedAt: CreationOptional<Date>
 
-class ProductCategory extends Model<ProductCategoryAttributes, ProductCategoryCreationAttributes> implements ProductCategoryAttributes {
-  public id!: number;
-  public id_product!: number;
-  public id_category!: number;
-}
-
-ProductCategory.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    id_product: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
-    id_category: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
-  },
-  {
-    sequelize,
-    tableName: 'product_category',
-    timestamps: false,
-    underscored: true,
+  // ProductCategory belongsTo Product
+  declare product?: NonAttribute<Product>
+  declare getProduct: BelongsToGetAssociationMixin<Product>
+  declare setProduct: BelongsToSetAssociationMixin<Product, number>
+  declare createProduct: BelongsToCreateAssociationMixin<Product>
+  
+  // ProductCategory belongsTo Category
+  declare category?: NonAttribute<Category>
+  declare getCategory: BelongsToGetAssociationMixin<Category>
+  declare setCategory: BelongsToSetAssociationMixin<Category, number>
+  declare createCategory: BelongsToCreateAssociationMixin<Category>
+  
+  declare static associations: {
+    product: Association<ProductCategory, Product>,
+    category: Association<ProductCategory, Category>
   }
-);
 
-export default ProductCategory;
+  static initModel(sequelize: Sequelize): typeof ProductCategory {
+    ProductCategory.init({
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+        unique: true
+      },
+      idProduct: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      idCategory: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      createdAt: {
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        type: DataTypes.DATE
+      }
+    }, {
+      sequelize
+    })
+    
+    return ProductCategory
+  }
+}

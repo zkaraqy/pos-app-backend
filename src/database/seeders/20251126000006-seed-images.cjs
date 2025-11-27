@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('image', [
+    await queryInterface.bulkInsert('images', [
       {
         id: 1,
         label: 'Nasi Goreng Main',
@@ -50,6 +50,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('image', null, {});
+    await queryInterface.bulkDelete('images', null, {});
   },
 };

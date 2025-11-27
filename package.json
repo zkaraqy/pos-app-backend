@@ -14,14 +14,17 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.4",
+    "@hono/standard-validator": "^0.2.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^17.2.2",
     "hono": "^4.9.8",
     "mysql2": "^3.15.0",
     "sequelize": "^6.37.7",
-    "uuid": "^11.0.4"
+    "uuid": "^11.0.4",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.11.17",
     "sequelize-cli": "^6.6.3",
     "tsx": "^4.7.1",

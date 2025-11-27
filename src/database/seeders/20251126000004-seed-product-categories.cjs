@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('product_category', [
+    await queryInterface.bulkInsert('product_categories', [
       // Nasi Goreng - Makanan
       { id: 1, id_product: 1, id_category: 1 },
       // Mie Goreng - Makanan
@@ -29,6 +29,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('product_category', null, {});
+    await queryInterface.bulkDelete('product_categories', null, {});
   },
 };
