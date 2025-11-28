@@ -64,14 +64,14 @@ export class TransactionDetail extends Model<
         unique: true
       },
       idTransaction: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
       idProduct: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER.UNSIGNED
       },
       idProductVarian: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER.UNSIGNED
       },
       price: {
         type: DataTypes.DECIMAL,

@@ -28,6 +28,10 @@ module.exports = {
     dialect: 'mysql',
     dialectOptions: {
       bigNumberStrings: true,
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
     },
   },
   production: {
@@ -37,5 +41,11 @@ module.exports = {
     host: process.env.PROD_DB_HOSTNAME,
     port: process.env.PROD_DB_PORT,
     dialect: 'mysql',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };

@@ -3,7 +3,7 @@ const DataTypes = require('sequelize').DataTypes
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addConstraint('product_varians', {
-      fields: ['product_id'],
+      fields: ['id_product'],
       type: 'foreign key',
       name: 'product_varians_product_id_fkey',
       references: {
@@ -13,7 +13,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('images', {
-      fields: ['product_id'],
+      fields: ['id_product'],
       type: 'foreign key',
       name: 'images_product_id_fkey',
       references: {
@@ -23,7 +23,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('images', {
-      fields: ['product_varian_id'],
+      fields: ['id_product_varian'],
       type: 'foreign key',
       name: 'images_product_varian_id_fkey',
       references: {
@@ -33,9 +33,9 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('transactions', {
-      fields: ['user_id'],
+      fields: ['id_cashier'],
       type: 'foreign key',
-      name: 'transactions_user_id_fkey',
+      name: 'transactions_cashier_id_fkey',
       references: {
         table: 'users',
         field: 'id'
@@ -43,7 +43,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('transaction_details', {
-      fields: ['transactions_id'],
+      fields: ['id_transaction'],
       type: 'foreign key',
       name: 'transaction_details_transactions_id_fkey',
       references: {
@@ -53,7 +53,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('transaction_details', {
-      fields: ['product_id'],
+      fields: ['id_product'],
       type: 'foreign key',
       name: 'transaction_details_product_id_fkey',
       references: {
@@ -63,7 +63,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('transaction_details', {
-      fields: ['product_varian_id'],
+      fields: ['id_product_varian'],
       type: 'foreign key',
       name: 'transaction_details_product_varian_id_fkey',
       references: {
@@ -73,7 +73,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('product_categories', {
-      fields: ['product_id'],
+      fields: ['id_product'],
       type: 'foreign key',
       name: 'product_categories_product_id_fkey',
       references: {
@@ -83,7 +83,7 @@ module.exports = {
     })
     
     await queryInterface.addConstraint('product_categories', {
-      fields: ['category_id'],
+      fields: ['id_category'],
       type: 'foreign key',
       name: 'product_categories_category_id_fkey',
       references: {
@@ -96,7 +96,7 @@ module.exports = {
     await queryInterface.removeConstraint('product_varians', 'product_varians_product_id_fkey')
     await queryInterface.removeConstraint('images', 'images_product_id_fkey')
     await queryInterface.removeConstraint('images', 'images_product_varian_id_fkey')
-    await queryInterface.removeConstraint('transactions', 'transactions_user_id_fkey')
+    await queryInterface.removeConstraint('transactions', 'transactions_cashier_id_fkey')
     await queryInterface.removeConstraint('transaction_details', 'transaction_details_transactions_id_fkey')
     await queryInterface.removeConstraint('transaction_details', 'transaction_details_product_id_fkey')
     await queryInterface.removeConstraint('transaction_details', 'transaction_details_product_varian_id_fkey')

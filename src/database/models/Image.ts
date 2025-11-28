@@ -63,10 +63,10 @@ export class Image extends Model<
         allowNull: false
       },
       idProduct: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER.UNSIGNED
       },
       idProductVarian: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER.UNSIGNED
       },
       createdAt: {
         type: DataTypes.DATE

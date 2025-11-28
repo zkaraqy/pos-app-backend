@@ -12,12 +12,12 @@ module.exports = {
         unique: true
       },
       idProduct: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_product',
         allowNull: false
       },
       idCategory: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_category',
         allowNull: false
       },
@@ -29,14 +29,6 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
-      productId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'product_id'
-      },
-      categoryId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'category_id'
-      }
     })
   },
   down: async (queryInterface, Sequelize) => {

@@ -22,11 +22,11 @@ module.exports = {
         allowNull: false
       },
       idProduct: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_product'
       },
       idProductVarian: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_product_varian'
       },
       createdAt: {
@@ -37,14 +37,6 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
-      productId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'product_id'
-      },
-      productVarianId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'product_varian_id'
-      }
     })
   },
   down: async (queryInterface, Sequelize) => {

@@ -8,6 +8,7 @@ import { logger } from 'hono/logger';
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import transactionRoutes from './routes/transaction.routes.js';
+import { serveStatic } from '@hono/node-server/serve-static';
 
 dotenv.config();
 
@@ -18,6 +19,10 @@ const app = new Hono()
 app.use(cors())
 app.use(logger())
 
+app.use('/public/*', serveStatic({
+  root: './',
+  rewriteRequestPath: (path) => path.replace(/^\/public/, '/public'),
+}));
 app.get('/', async (c) => {
   return c.text(`PoS App Backend is running.`)
 })

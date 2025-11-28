@@ -77,7 +77,7 @@ export class ProductVarian extends Model<
         unique: true
       },
       idProduct: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
       name: {

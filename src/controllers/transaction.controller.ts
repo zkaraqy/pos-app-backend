@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 import { Transaction, TransactionDetail } from '../database/models/index.js';
-import { successResponse, errorResponse, notFoundResponse, validationErrorResponse } from '../utils/response.util.js';
+import { successResponse, errorResponse, notFoundResponse } from '../utils/response.util.js';
 import { generateTransactionRef } from '../utils/transaction.util.js';
 import { sequelize } from '../database/index.js';
 import { z } from 'zod';

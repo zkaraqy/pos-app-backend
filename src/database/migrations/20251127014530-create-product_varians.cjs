@@ -12,7 +12,7 @@ module.exports = {
         unique: true
       },
       idProduct: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_product',
         allowNull: false
       },
@@ -44,10 +44,6 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
-      productId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'product_id'
-      }
     })
   },
   down: async (queryInterface, Sequelize) => {

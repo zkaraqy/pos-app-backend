@@ -12,16 +12,16 @@ module.exports = {
         unique: true
       },
       idTransaction: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_transaction',
         allowNull: false
       },
       idProduct: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_product'
       },
       idProductVarian: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         field: 'id_product_varian'
       },
       price: {
@@ -42,18 +42,6 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
-      transactionsId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'transactions_id'
-      },
-      productId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'product_id'
-      },
-      productVarianId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'product_varian_id'
-      }
     })
   },
   down: async (queryInterface, Sequelize) => {

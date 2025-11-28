@@ -1,5 +1,5 @@
 import type { Context } from 'hono';
-import { Product, Category, ProductVarian, Image, ProductCategory } from '../database/models/index.js';
+import { Product, ProductVarian, ProductCategory } from '../database/models/index.js';
 import { successResponse, errorResponse, notFoundResponse } from '../utils/response.util.js';
 import { z } from 'zod';
 import { Op } from 'sequelize';

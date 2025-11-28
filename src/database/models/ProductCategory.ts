@@ -53,11 +53,11 @@ export class ProductCategory extends Model<
         unique: true
       },
       idProduct: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
       idCategory: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false
       },
       createdAt: {

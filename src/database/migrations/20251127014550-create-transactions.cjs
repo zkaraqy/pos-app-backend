@@ -58,10 +58,6 @@ module.exports = {
         type: DataTypes.DATE,
         field: 'updated_at'
       },
-      userId: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'user_id'
-      }
     })
   },
   down: async (queryInterface, Sequelize) => {
