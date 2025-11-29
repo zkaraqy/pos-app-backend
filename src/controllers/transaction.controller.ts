@@ -6,44 +6,44 @@ import { sequelize } from '../database/index.js';
 import { z } from 'zod';
 
 export const getTransactionsQuerySchema = z.object({
-  page: z.string().optional().transform(val => val ? parseInt(val) : 1),
-  rowsPerPage: z.string().optional().transform(val => val ? parseInt(val) : 10),
-  status: z.enum(['waiting_payment', 'canceled', 'completed']).optional(),
+    page: z.string().optional().transform(val => val ? parseInt(val) : 1),
+    rowsPerPage: z.string().optional().transform(val => val ? parseInt(val) : 10),
+    status: z.enum(['waiting_payment', 'canceled', 'completed']).optional(),
 });
 
 export const getTransactionByIdParamSchema = z.object({
-  id: z.string().min(1),
+    id: z.string().min(1),
 });
 
 export const createTransactionSchema = z.object({
-  id_cashier: z.number().positive(),
-  type: z.enum(['makan_ditempat', 'bawa_pulang']),
-  table_number: z.number().nullable().optional(),
-  customer_name: z.string().nullable().optional(),
-  customer_email: z.string().email().nullable().optional(),
-  payment_method: z.enum(['qris', 'cash']),
-  status: z.enum(['waiting_payment', 'canceled', 'completed']).optional(),
-  ref: z.string().optional(),
-  items: z.array(
-    z.object({
-      id_product: z.number().positive().nullable().optional(),
-      id_product_varian: z.number().positive().nullable().optional(),
-      price: z.number().positive(),
-      quantity: z.number().positive(),
-    })
-  ).min(1),
+    id_cashier: z.number().positive(),
+    type: z.enum(['makan_ditempat', 'bawa_pulang']),
+    table_number: z.number().nullable().optional(),
+    customer_name: z.string().nullable().optional(),
+    customer_email: z.string().email().nullable().optional(),
+    payment_method: z.enum(['qris', 'cash']),
+    status: z.enum(['waiting_payment', 'canceled', 'completed']).optional(),
+    ref: z.string().optional(),
+    items: z.array(
+        z.object({
+            id_product: z.number().positive().nullable().optional(),
+            id_product_varian: z.number().positive().nullable().optional(),
+            price: z.number().positive(),
+            quantity: z.number().positive(),
+        })
+    ).min(1),
 });
 
 export const bulkCreateTransactionsSchema = z.object({
-  transactions: z.array(createTransactionSchema).min(1),
+    transactions: z.array(createTransactionSchema).min(1),
 });
 
 export const updateTransactionSchema = z.object({
-  status: z.enum(['waiting_payment', 'canceled', 'completed']).optional(),
-  table_number: z.number().nullable().optional(),
-  customer_name: z.string().nullable().optional(),
-  customer_email: z.string().email().nullable().optional(),
-  payment_method: z.enum(['qris', 'cash']).optional(),
+    status: z.enum(['waiting_payment', 'canceled', 'completed']).optional(),
+    table_number: z.number().nullable().optional(),
+    customer_name: z.string().nullable().optional(),
+    customer_email: z.string().email().nullable().optional(),
+    payment_method: z.enum(['qris', 'cash']).optional(),
 });
 
 export const getAllTransactions = async (c: Context) => {
@@ -348,5 +348,25 @@ export const updateTransaction = async (c: Context) => {
         return successResponse(c, updatedTransaction, 'Transaction updated successfully');
     } catch (error) {
         return errorResponse(c, 'Failed to update transaction', error);
+    }
+};
+
+export const deleteTransaction = async (c: Context) => {
+    const t = await sequelize.transaction();
+    try {
+        const id = c.req.param('id');
+        const transaction = await Transaction.findByPk(id);
+
+        if (!transaction) {
+            return notFoundResponse(c, 'Transaction');
+        }
+        await TransactionDetail.destroy({ where: { idTransaction: id }, transaction: t });
+        await transaction.destroy({ transaction: t });
+        await t.commit();
+
+        return successResponse(c, null, 'Transaction deleted successfully', 200);
+    } catch (error) {
+        await t.rollback();
+        return errorResponse(c, 'Failed to delete transaction', error);
     }
 };

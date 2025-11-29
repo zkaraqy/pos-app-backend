@@ -16,5 +16,6 @@ transactionRoutes.get('/:id', sValidator('param', getTransactionByIdParamSchema)
 transactionRoutes.post('/', sValidator('json', createTransactionSchema), transactionController.createTransaction);
 transactionRoutes.post('/bulk', sValidator('json', bulkCreateTransactionsSchema), transactionController.bulkCreateTransactions);
 transactionRoutes.put('/:id', sValidator('param', getTransactionByIdParamSchema), sValidator('json', updateTransactionSchema), transactionController.updateTransaction);
+transactionRoutes.delete('/:id', sValidator('param', getTransactionByIdParamSchema), transactionController.deleteTransaction);
 
 export default transactionRoutes;
