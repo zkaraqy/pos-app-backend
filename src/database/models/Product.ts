@@ -34,6 +34,7 @@ export class Product extends Model<
   declare description: string | null
   declare price: number | null
   declare stock: number
+  declare isActive: boolean
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -119,6 +120,11 @@ export class Product extends Model<
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         defaultValue: 0
+      },
+      isActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
       },
       createdAt: {
         type: DataTypes.DATE

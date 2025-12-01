@@ -5,21 +5,21 @@ import { z } from 'zod';
 import { Op } from 'sequelize';
 
 export const getProductsQuerySchema = z.object({
-  page: z.string().optional().transform(val => val ? parseInt(val) : 1),
-  rowsPerPage: z.string().optional().transform(val => val ? parseInt(val) : 10),
-  search: z.string().optional(),
+    page: z.string().optional().transform(val => val ? parseInt(val) : 1),
+    rowsPerPage: z.string().optional().transform(val => val ? parseInt(val) : 10),
+    search: z.string().optional(),
 });
 
 export const getProductByIdParamSchema = z.object({
-  id: z.string().min(1),
+    id: z.string().min(1),
 });
 
 export const getAllProducts = async (c: Context) => {
     try {
         const query = c.req.query();
         const page = Number(query.page) || 1;
-        const rowsPerPage = Number(query.rowsPerPage) || 10;
-        const offset = (page - 1) * rowsPerPage;
+        const rowsPerPage = Number(query.rowsPerPage) || undefined;
+        const offset = rowsPerPage ? (page - 1) * rowsPerPage : undefined;
 
         const whereClause: any = {};
         if (query.search) {
@@ -51,14 +51,15 @@ export const getAllProducts = async (c: Context) => {
             ],
             order: [['id', 'ASC']],
             limit: rowsPerPage,
-            offset,
+            offset: offset,
+            distinct: true,
         });
 
-        const totalPages = Math.ceil(count / rowsPerPage);
+        const totalPages = Math.ceil(count / (rowsPerPage || count));
 
         return successResponse(
-            c, 
-            products, 
+            c,
+            products,
             'Products retrieved successfully',
             200,
             {
@@ -108,5 +109,22 @@ export const getProductById = async (c: Context) => {
         return successResponse(c, product, 'Product retrieved successfully');
     } catch (error) {
         return errorResponse(c, 'Failed to retrieve product', error);
+    }
+};
+
+export const updateProductById = async (c: Context) => {
+    try {
+        const id = c.req.param('id');
+        const productData = await c.req.json();
+        const product = await Product.findByPk(id);
+
+        if (!product) {
+            return notFoundResponse(c, 'Product');
+        }
+        await product.update(productData);
+
+        return successResponse(c, product, 'Product updated successfully');
+    } catch (error) {
+        return errorResponse(c, 'Failed to update product', error);
     }
 };

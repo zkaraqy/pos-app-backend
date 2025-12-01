@@ -50,8 +50,8 @@ export const getAllTransactions = async (c: Context) => {
     try {
         const query = c.req.query();
         const page = query.page ? parseInt(query.page) : 1;
-        const rowsPerPage = query.rowsPerPage ? parseInt(query.rowsPerPage) : 10;
-        const offset = (page - 1) * rowsPerPage;
+        const rowsPerPage = query.rowsPerPage ? parseInt(query.rowsPerPage) : undefined;
+        const offset = rowsPerPage ? (page - 1) * rowsPerPage : undefined;
 
         const whereClause: any = {};
         if (query.status) {
@@ -84,7 +84,7 @@ export const getAllTransactions = async (c: Context) => {
             offset,
         });
 
-        const totalPages = Math.ceil(count / rowsPerPage);
+        const totalPages = Math.ceil(count / (rowsPerPage || count));
 
         return successResponse(
             c,
@@ -157,6 +157,7 @@ export const createTransaction = async (c: Context) => {
                 customerEmail: body.customer_email || null,
                 paymentMethod: body.payment_method,
                 status: body.status || 'waiting_payment',
+                transactionStatus: 'waiting'
             },
             { transaction: t }
         );
@@ -243,6 +244,7 @@ export const bulkCreateTransactions = async (c: Context) => {
                         customerEmail: transactionData.customer_email || null,
                         paymentMethod: transactionData.payment_method,
                         status: transactionData.status || 'waiting_payment',
+                        transactionStatus: 'waiting'
                     },
                     { transaction: t }
                 );

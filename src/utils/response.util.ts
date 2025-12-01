@@ -9,7 +9,7 @@ interface SuccessResponse<T> {
 
 interface PaginationMetadata {
   page: number;
-  rowsPerPage: number;
+  rowsPerPage?: number;
   total: number;
   totalPages: number;
 }

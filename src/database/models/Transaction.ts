@@ -39,6 +39,7 @@ export class Transaction extends Model<
   declare customerEmail: string | null
   declare paymentMethod: 'qris' | 'cash'
   declare status: 'waiting_payment' | 'canceled' | 'completed'
+  declare transactionStatus: 'waiting' | 'process' | 'done'
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
 
@@ -105,6 +106,11 @@ export class Transaction extends Model<
         type: DataTypes.ENUM('waiting_payment', 'canceled', 'completed'),
         allowNull: false,
         defaultValue: 'waiting_payment'
+      },
+      transactionStatus: {
+        type: DataTypes.ENUM('waiting', 'process', 'done'),
+        allowNull: false,
+        defaultValue: 'waiting'
       },
       createdAt: {
         type: DataTypes.DATE
