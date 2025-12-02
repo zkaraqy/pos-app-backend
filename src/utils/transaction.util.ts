@@ -1,17 +1,10 @@
 export function generateTransactionRef(): string {
-  const timestamp = Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  })
-    .format(new Date())
-    .replace(/[^0-9]/g, '');
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
   const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `TRX${timestamp}-${random}`;
+  return `TRX-${year}${month}${day}-${random}`;
 }
 
 export function calculateTransactionTotal(
