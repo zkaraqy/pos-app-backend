@@ -14,6 +14,14 @@ export const getProductByIdParamSchema = z.object({
     id: z.string().min(1),
 });
 
+export const updateProductByIdBodySchema = z.object({
+    name: z.string().optional(),
+    description: z.string().nullable().optional(),
+    price: z.number().nullable().optional(),
+    stock: z.number().optional(),
+    isActive: z.boolean().optional(),
+});
+
 export const getAllProducts = async (c: Context) => {
     try {
         const query = c.req.query();

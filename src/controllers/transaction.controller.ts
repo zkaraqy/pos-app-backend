@@ -79,7 +79,7 @@ export const getAllTransactions = async (c: Context) => {
                     ],
                 }
             ],
-            order: [['createdAt', 'DESC']],
+            order: [['created_at', 'DESC']],
             limit: rowsPerPage,
             offset,
         });

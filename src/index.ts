@@ -8,6 +8,7 @@ import { logger } from 'hono/logger';
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import transactionRoutes from './routes/transaction.routes.js';
+import dashboardRoutes from './routes/dashboard.routes.js';
 import { serveStatic } from '@hono/node-server/serve-static';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.get('/', async (c) => {
 app.route('/api/', authRoutes)
 app.route('/api/products', productRoutes)
 app.route('/api/transactions', transactionRoutes)
+app.route('/api/dashboard', dashboardRoutes)
 
 
 app.all('*', (c) => c.json({ message: 'Not Found' }, 404))

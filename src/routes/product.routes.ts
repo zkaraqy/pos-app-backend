@@ -10,6 +10,6 @@ const productRoutes = new Hono();
 
 productRoutes.get('/', sValidator('query', getProductsQuerySchema), productController.getAllProducts);
 productRoutes.get('/:id', sValidator('param', getProductByIdParamSchema), productController.getProductById);
-productRoutes.put('/:id', sValidator('param', getProductByIdParamSchema), productController.updateProductById);
+productRoutes.put('/:id', sValidator('param', getProductByIdParamSchema), sValidator('json', productController.updateProductByIdBodySchema), productController.updateProductById);
 
 export default productRoutes;

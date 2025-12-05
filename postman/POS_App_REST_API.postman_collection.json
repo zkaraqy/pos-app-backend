@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "fbad05f0-39f2-416c-8893-ce82fba07a0f",
 		"name": "POS App REST API",
-		"description": "Complete REST API collection for POS App Backend.\n\nBase URL: http://localhost:3000\n\nEndpoints:\n- Authentication\n- Products\n- Transactions",
+		"description": "Complete REST API collection for POS App Backend.\n\nBase URL: http://localhost:3000\n\nEndpoints:\n- Authentication\n- Products\n- Transactions\n- Dashboard",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"variable": [
@@ -270,6 +270,142 @@
 							]
 						},
 						"description": "Test mendapatkan produk yang tidak ada. Akan mengembalikan 404 Not Found."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product - Success",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nasi Goreng Spesial Updated\",\n    \"category\": \"Makanan\",\n    \"description\": \"Nasi goreng dengan bumbu spesial yang telah diupdate\",\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1"
+							]
+						},
+						"description": "Update produk berdasarkan ID. Semua field bersifat optional."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product - Partial Update",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Nasi Goreng Special Edition\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1"
+							]
+						},
+						"description": "Update hanya satu atau beberapa field produk (partial update)."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product - Deactivate",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActive\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"1"
+							]
+						},
+						"description": "Menonaktifkan produk dengan set isActive ke false."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product - Failed (Not Found)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Product Updated\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"9999"
+							]
+						},
+						"description": "Test update produk yang tidak ada. Akan mengembalikan 404 Not Found."
 					},
 					"response": []
 				}
@@ -952,9 +1088,356 @@
 						"description": "Test update dengan status yang tidak valid. Akan mengembalikan validation error."
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Transaction - Success",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/transactions/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"1"
+							]
+						},
+						"description": "Menghapus transaksi berdasarkan ID. Soft delete - data tidak benar-benar dihapus dari database."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Transaction - Failed (Not Found)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/transactions/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"9999"
+							]
+						},
+						"description": "Test delete transaksi yang tidak ada. Akan mengembalikan 404 Not Found."
+					},
+					"response": []
 				}
 			],
 			"description": "Endpoints untuk mengelola transaksi"
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Dashboard Summary - Today (Hourly)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/summary?time_range=today&trend_period=hourly&status_filter=all&top_products_limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "today",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "trend_period",
+									"value": "hourly",
+									"description": "hourly | daily"
+								},
+								{
+									"key": "status_filter",
+									"value": "all",
+									"description": "all | waiting_payment | canceled | completed"
+								},
+								{
+									"key": "top_products_limit",
+									"value": "10",
+									"description": "Jumlah top products (1-50)"
+								}
+							]
+						},
+						"description": "**RECOMMENDED ENDPOINT** - Mendapatkan semua data dashboard dalam satu request (KPIs, sales trend, top products, payment methods, recent transactions). Semua query berjalan parallel untuk performa optimal."
+					},
+					"response": []
+				},
+				{
+					"name": "Dashboard Summary - Last 30 Days (Daily)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/summary?time_range=30days&trend_period=daily&status_filter=completed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "30days",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "trend_period",
+									"value": "daily",
+									"description": "hourly | daily"
+								},
+								{
+									"key": "status_filter",
+									"value": "completed",
+									"description": "all | waiting_payment | canceled | completed"
+								}
+							]
+						},
+						"description": "Dashboard summary untuk 30 hari terakhir dengan trend harian dan filter status completed."
+					},
+					"response": []
+				},
+				{
+					"name": "Dashboard Summary - Custom Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/summary?time_range=custom&start_date=2025-01-01&end_date=2025-01-15&trend_period=daily&status_filter=all&top_products_limit=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "custom",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "start_date",
+									"value": "2025-01-01",
+									"description": "Required jika time_range=custom (format: YYYY-MM-DD)"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-01-15",
+									"description": "Required jika time_range=custom (format: YYYY-MM-DD)"
+								},
+								{
+									"key": "trend_period",
+									"value": "daily",
+									"description": "hourly | daily"
+								},
+								{
+									"key": "status_filter",
+									"value": "all",
+									"description": "all | waiting_payment | canceled | completed"
+								},
+								{
+									"key": "top_products_limit",
+									"value": "5",
+									"description": "Jumlah top products (1-50)"
+								}
+							]
+						},
+						"description": "Dashboard summary dengan custom date range. Parameter start_date dan end_date required."
+					},
+					"response": []
+				},
+				{
+					"name": "KPIs Only - Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/kpis?time_range=today&status_filter=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"kpis"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "today",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "status_filter",
+									"value": "all",
+									"description": "all | waiting_payment | canceled | completed"
+								}
+							]
+						},
+						"description": "Mendapatkan KPI cards saja (Total Sales, Total Transactions, Average Transaction Value) dengan percentage change vs periode sebelumnya."
+					},
+					"response": []
+				},
+				{
+					"name": "Sales Trend - Last 7 Days (Daily)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/sales-trend?time_range=7days&trend_period=daily&status_filter=completed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"sales-trend"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "7days",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "trend_period",
+									"value": "daily",
+									"description": "hourly | daily"
+								},
+								{
+									"key": "status_filter",
+									"value": "completed",
+									"description": "all | waiting_payment | canceled | completed"
+								}
+							]
+						},
+						"description": "Mendapatkan data sales trend untuk line/area chart. Format: array of {time_period, total_sales, transaction_count}. Compatible dengan Syncfusion Flutter Charts."
+					},
+					"response": []
+				},
+				{
+					"name": "Top Products - Last 7 Days",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/top-products?time_range=7days&top_products_limit=5&status_filter=completed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"top-products"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "7days",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "top_products_limit",
+									"value": "5",
+									"description": "Jumlah top products (1-50)"
+								},
+								{
+									"key": "status_filter",
+									"value": "completed",
+									"description": "all | waiting_payment | canceled | completed"
+								}
+							]
+						},
+						"description": "Mendapatkan top-selling products by quantity untuk bar chart. Format: array of {product_name, quantity_sold, total_revenue, product_id}."
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Methods Distribution - Today",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/payment-methods?time_range=today&status_filter=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"payment-methods"
+							],
+							"query": [
+								{
+									"key": "time_range",
+									"value": "today",
+									"description": "today | yesterday | 7days | 30days | custom"
+								},
+								{
+									"key": "status_filter",
+									"value": "all",
+									"description": "all | waiting_payment | canceled | completed"
+								}
+							]
+						},
+						"description": "Mendapatkan distribusi payment methods untuk donut/pie chart. Format: array of {method, total_amount, transaction_count, percentage}. Compatible dengan Syncfusion DoughnutSeries."
+					},
+					"response": []
+				},
+				{
+					"name": "Recent Transactions - Last 5",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboard/recent-transactions?status_filter=completed&limit=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboard",
+								"recent-transactions"
+							],
+							"query": [
+								{
+									"key": "status_filter",
+									"value": "completed",
+									"description": "all | waiting_payment | canceled | completed"
+								},
+								{
+									"key": "limit",
+									"value": "5",
+									"description": "Jumlah transactions (1-50, default: 5)"
+								}
+							]
+						},
+						"description": "Mendapatkan recent transactions untuk list/table. Format: array of {id, ref, created_at, total_amount, status, payment_method, customer_name}."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints untuk Dashboard Analytics & Visualizations\n\n**Main Endpoint:** `/api/dashboard/summary` (Recommended) - Returns all dashboard data in one request\n\n**Individual Endpoints:**\n- `/api/dashboard/kpis` - KPI cards with percentage changes\n- `/api/dashboard/sales-trend` - Sales trend data (hourly/daily)\n- `/api/dashboard/top-products` - Top-selling products\n- `/api/dashboard/payment-methods` - Payment method distribution\n- `/api/dashboard/recent-transactions` - Recent transactions list\n\n**Features:**\n- Flexible time ranges (today, yesterday, 7days, 30days, custom)\n- Status filtering (all, waiting_payment, canceled, completed)\n- Optimized for Syncfusion Flutter Charts\n- Parallel query execution for performance\n- Percentage change calculations vs previous period"
 		}
 	]
 }
