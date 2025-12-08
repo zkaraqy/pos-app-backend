@@ -9,6 +9,8 @@ import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import transactionRoutes from './routes/transaction.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import categoryRoutes from './routes/category.routes.js';
+import variantRoutes from './routes/variant.routes.js';
 import { serveStatic } from '@hono/node-server/serve-static';
 
 dotenv.config();
@@ -31,6 +33,8 @@ app.route('/api/', authRoutes)
 app.route('/api/products', productRoutes)
 app.route('/api/transactions', transactionRoutes)
 app.route('/api/dashboard', dashboardRoutes)
+app.route('/api/categories', categoryRoutes)
+app.route('/api/variants', variantRoutes)
 
 
 app.all('*', (c) => c.json({ message: 'Not Found' }, 404))

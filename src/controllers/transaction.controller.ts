@@ -1,5 +1,5 @@
 import type { Context } from 'hono';
-import { Transaction, TransactionDetail } from '../database/models/index.js';
+import { Transaction, TransactionDetail, Product, ProductVarian } from '../database/models/index.js';
 import { successResponse, errorResponse, notFoundResponse } from '../utils/response.util.js';
 import { generateTransactionRef } from '../utils/transaction.util.js';
 import { sequelize } from '../database/index.js';
@@ -370,5 +370,113 @@ export const deleteTransaction = async (c: Context) => {
     } catch (error) {
         await t.rollback();
         return errorResponse(c, 'Failed to delete transaction', error);
+    }
+};
+
+export const updateTransactionStock = async (c: Context) => {
+    const t = await sequelize.transaction();
+    try {
+        const id = c.req.param('id');
+        
+        const transaction = await Transaction.findByPk(id, {
+            include: [
+                {
+                    association: Transaction.associations.transactionDetails,
+                }
+            ],
+            transaction: t
+        });
+
+        if (!transaction) {
+            await t.rollback();
+            return notFoundResponse(c, 'Transaction');
+        }
+
+        const items = transaction.transactionDetails || [];
+        const stockUpdates: any[] = [];
+        const errors: any[] = [];
+
+        for (const item of items) {
+            try {
+                if (item.idProductVarian) {
+                    // Update variant stock
+                    const variant = await ProductVarian.findByPk(item.idProductVarian, { transaction: t });
+                    if (variant) {
+                        const newStock = variant.stock - item.quantity;
+                        if (newStock < 0) {
+                            errors.push({
+                                type: 'variant',
+                                id: item.idProductVarian,
+                                name: variant.name,
+                                error: 'Insufficient stock',
+                                currentStock: variant.stock,
+                                requested: item.quantity
+                            });
+                        } else {
+                            await variant.update({ stock: newStock }, { transaction: t });
+                            stockUpdates.push({
+                                type: 'variant',
+                                id: variant.id,
+                                name: variant.name,
+                                previousStock: variant.stock + item.quantity,
+                                newStock: newStock,
+                                quantityReduced: item.quantity
+                            });
+                        }
+                    }
+                } else if (item.idProduct) {
+                    // Update product stock
+                    const product = await Product.findByPk(item.idProduct, { transaction: t });
+                    if (product) {
+                        const newStock = product.stock - item.quantity;
+                        if (newStock < 0) {
+                            errors.push({
+                                type: 'product',
+                                id: item.idProduct,
+                                name: product.name,
+                                error: 'Insufficient stock',
+                                currentStock: product.stock,
+                                requested: item.quantity
+                            });
+                        } else {
+                            await product.update({ stock: newStock }, { transaction: t });
+                            stockUpdates.push({
+                                type: 'product',
+                                id: product.id,
+                                name: product.name,
+                                previousStock: product.stock + item.quantity,
+                                newStock: newStock,
+                                quantityReduced: item.quantity
+                            });
+                        }
+                    }
+                }
+            } catch (itemError) {
+                errors.push({
+                    itemId: item.id,
+                    error: itemError instanceof Error ? itemError.message : 'Unknown error'
+                });
+            }
+        }
+
+        if (errors.length > 0) {
+            await t.rollback();
+            return errorResponse(c, 'Failed to update some stocks', { 
+                errors, 
+                successfulUpdates: stockUpdates 
+            }, 400);
+        }
+
+        await t.commit();
+
+        return successResponse(c, {
+            transactionId: transaction.id,
+            transactionRef: transaction.ref,
+            stockUpdates,
+            totalItemsProcessed: stockUpdates.length
+        }, 'Transaction stock updated successfully');
+    } catch (error) {
+        await t.rollback();
+        return errorResponse(c, 'Failed to update transaction stock', error);
     }
 };
